@@ -1,13 +1,685 @@
-body {
+/* Reset básico */
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f9;
+  color: #333;
 }
+
+/* Estilo del contenedor de layout */
+.layout {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "nav nav"
+    "lateral content"
+    "footer footer";
+  grid-template-columns: 1fr 3fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Estilos para cuando el layout está en vista "películas" (sin aside) */
+.layout--full {
+  grid-template-areas:
+    "header header"
+    "nav nav"
+    "content content"
+    "footer footer";
+  grid-template-columns: 1fr;
+}
+
+/* Header */
+.header {
+  grid-area: header;
+  background-color: #3b87ce;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2em;
+}
+
+/* Navegación */
+.nav {
+  grid-area: nav;
+  background-color: #3b87ce;
+  color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.nav ul {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+}
+
+.nav ul li {
+  margin: 0 15px;
+}
+
+.nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Contenido principal */
+.content {
+  grid-area: content;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Aside o barra lateral */
+.lateral {
+  grid-area: lateral;
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
+/* Contenedores dentro del aside */
+.search,
+.add {
+  margin-bottom: 20px;
+}
+
+.title {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: #3b87ce;
+}
+
+.title-content {
+  margin-bottom: 20px;
+  font-size: 2em;
+  color: #3b87ce;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Textarea con tamaño fijo */
+textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none; /* Evita que el usuario cambie el tamaño del textarea */
+}
+
+button,
+input[type="submit"] {
+  padding: 10px 15px;
+  background-color: #3b87ce;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #2f6ca6;
+}
+
+/* Estilo del contenedor de películas (section) */
+section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Estilo de cada artículo de película */
+.peli-item {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: calc(50% - 10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Efecto hover para .peli-item */
+.peli-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes glowing {
+  0%{
+    background-position: 0 0;
+  }
+  50%{
+    background-position: 400% 0;
+  }
+  100%{
+    background-position: 0 0;
+  }
+}
+
+/* Estilo del título de la película */
+.peli-item .title {
+  font-family: 'Arial', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* Estilo de la descripción de la película */
+.peli-item .description {
+  font-family: 'Arial', sans-serif;
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-bottom: 15px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* Contenedor para alinear botones en la parte inferior de cada tarjeta */
+.peli-item .peli-item-buttons {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Botón de "Editar" */
+.peli-item .edit {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 8px;
+  padding: 10px;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+}
+
+.peli-item .edit:hover {
+  background-color: #2980b9;
+}
+
+/* Botón de "Eliminar" */
+.peli-item .delete {
+  background-color: #e74c3c;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+}
+
+.peli-item .delete:hover {
+  background-color: #c0392b;
+}
+
+/* Footer */
+footer {
+  grid-area: footer;
+  text-align: center;
+  padding: 15px;
+  background-color: #3b87ce;
+  color: #fff;
+  font-size: 0.9em;
+  border-radius: 5px;
+}
+
+/* Fondo opaco para el modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+  text-align: center;
+}
+
+/* Botón de cerrar */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+/* Estilo para el contenedor principal */
+#content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Título principal */
+.title-content {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Sección del blog */
+#blog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Estilos para cada artículo del blog */
+.blog-film-item {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilo para el título de cada entrada */
+.blog-film-item .title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+/* Estilo para la descripción de cada entrada */
+.blog-film-item .description {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Efecto hover para cada entrada */
+.blog-film-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Aseguramos que cada artículo ocupe el 100% de su contenedor */
+.blog-film-item {
+  width: 100%;
+}
+
+/* Estilos para las estrellas */
+.rating {
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.star {
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.star:hover {
+  color: #f39c12;
+}
+
+/* Estilos de la vista detallada de blogPost */
+.blog-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Banner de la película */
+.banner {
+  width: 100%;
+  height: 300px;
+  background-color: #eaeaea;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Título de la película */
+.film-title {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Descripción de la película */
+.film-description {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+/* Contenido de la reseña */
+.review-content h4 {
+  font-size: 1.5em;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.review-content p {
+  font-size: 1em;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: justify;
+}
+
+/* Grupo de botones para editar, cambiar imagen y volver */
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-review-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.edit-review-button:hover {
+  background-color: #45A049;
+}
+
+.change-banner-button {
+  background-color: #2196F3;
+  color: white;
+}
+
+.change-banner-button:hover {
+  background-color: #1E88E5;
+}
+
+.back-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.back-button:hover {
+  background-color: #e53935;
+}
+
+/* Responsive: Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  .banner {
+    height: 200px;
+  }
+
+  .film-title {
+    font-size: 1.8em;
+  }
+
+  .film-description,
+  .review-content p {
+    font-size: 0.95em;
+  }
+}
+
+/* Estilos de la vista detallada de blogPost */
+.blog-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Banner de la película */
+.banner {
+  position: relative; /* Para posicionar el botón dentro del banner */
+  width: 100%;
+  height: 500px;
+  background-color: #eaeaea;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-article{
+  position: relative; /* Para posicionar el botón dentro del banner */
+  width: 100%;
+  background-color: #eaeaea;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* Botón para cambiar el banner, oculto inicialmente */
+.change-banner-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(33, 150, 243, 0.8);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Mostrar el botón al hacer hover en el banner */
+.banner:hover .change-banner-button {
+  opacity: 1;
+}
+
+/* Título de la película */
+.film-title {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Descripción de la película */
+.film-description {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+/* Contenido de la reseña */
+.review-content h4 {
+  font-size: 1.5em;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.review-content p {
+  font-size: 1em;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: justify;
+}
+
+/* Grupo de botones para editar y volver */
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-review-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.edit-review-button:hover {
+  background-color: #45A049;
+}
+
+.back-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.back-button:hover {
+  background-color: #e53935;
+}
+
+/* Responsive: Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  /* Estilos del banner y la imagen ajustada */
+  .banner {
+    position: relative;
+    width: 100%;
+    height: 400px; /* Ajusta la altura del banner según necesites */
+    background-color: #eaeaea;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Hace que la imagen cubra completamente el área del banner */
+    object-position: center; /* Centra la imagen dentro del banner */
+  }
+
+
+  .film-title {
+    font-size: 1.8em;
+  }
+
+  .film-description,
+  .review-content p {
+    font-size: 0.95em;
+  }
+}
+
+#comments-section{
+  width: 100%;
+}
+@media (max-width: 768px) {
+  /* Estilo de cada artículo de película para ocupar el 100% del ancho en pantallas pequeñas */
+  .peli-item {
+    width: 100%; /* Ocupa el 100% del ancho del contenedor */
+  }
+}
+
+@media (min-width: 1250px) {
+  /* Estilo para el contenedor de Inicio con dos columnas */
+  .layout-inicio {
+    display: flex;
+    gap: 20px;
+  }
+
+  /* Ajustar el ancho de aside y del contenido principal */
+  .layout-inicio .aside {
+    flex: 1; /* Aside ocupa menos espacio */
+  }
+
+  .layout-inicio .content {
+    flex: 5; /* Contenido ocupa más espacio */
+  }
+}
+
+
+
+
